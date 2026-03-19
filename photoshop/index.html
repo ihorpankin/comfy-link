@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer {
+            flex-shrink: 0;
+            padding: 8px;
+            padding-top: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #f44336;
+        }
+
+        .dot.connected {
+            background: #4caf50;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 2px;
+        }
+
+        .mode-toggle sp-action-button {
+            flex: 1;
+        }
+
+        sp-progressbar {
+            width: 100%;
+        }
+
+        .progress-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        sp-button#generateBtn {
+            width: 100%;
+        }
+
+        /* Settings dialog */
+        dialog {
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            width: 280px;
+        }
+
+        dialog .form-row {
+            margin: 12px 0;
+        }
+
+        dialog sp-textfield {
+            width: 100%;
+        }
+
+        dialog .dialog-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+
+        .test-result {
+            font-size: 11px;
+            margin-top: 4px;
+            min-height: 16px;
+        }
+
+        .test-result.success { color: #4caf50; }
+        .test-result.error { color: #f44336; }
+
+        /* Preview section */
+        .preview-container {
+            position: relative;
+            display: inline-block;
+            background: #1e1e1e;
+            border-radius: 4px;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .preview-container img {
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        .preview-container img:hover {
+            opacity: 0.85;
+        }
+
+        .preview-dismiss {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 20px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .preview-dismiss:hover {
+            background: rgba(244, 67, 54, 0.8);
+        }
+
+        .preview-hint {
+            position: absolute;
+            bottom: 6px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Scrollable content -->
+    <div class="content">
+        <!-- Header -->
+        <div class="header">
+            <div class="connection-status">
+                <span class="dot" id="connDot"></span>
+                <sp-detail id="connLabel">Disconnected</sp-detail>
+            </div>
+            <sp-action-button quiet id="settingsBtn" title="Settings">
+                <sp-label>&#9881;</sp-label>
+            </sp-action-button>
+        </div>
+
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <sp-action-button id="modeMask" selected>Selection as Mask</sp-action-button>
+            <sp-action-button id="modeCrop">Selection Area Only</sp-action-button>
+        </div>
+
+        <!-- Progress (hidden by default) -->
+        <div class="progress-section" id="progressSection" hidden>
+            <sp-progressbar id="progressBar" value="0" max="100">
+                <sp-label slot="label" id="statusLabel"></sp-label>
+            </sp-progressbar>
+        </div>
+
+        <!-- Preview (hidden by default) -->
+        <div id="previewSection" hidden>
+            <div class="preview-container">
+                <img id="previewImage" alt="Result preview" />
+                <button class="preview-dismiss" id="dismissPreview" title="Dismiss">&times;</button>
+                <span class="preview-hint">Click image to apply</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed footer -->
+    <div class="footer">
+        <sp-button variant="cta" id="generateBtn">Generate</sp-button>
+    </div>
+
+    <!-- Settings Dialog -->
+    <dialog id="settingsDialog">
+        <sp-heading size="S">Connection Settings</sp-heading>
+        <div class="form-row">
+            <sp-textfield id="serverUrl" placeholder="http://123.456.789.0:8188">
+                <sp-label slot="label">Server URL (ComfyUI)</sp-label>
+            </sp-textfield>
+        </div>
+        <div class="test-result" id="testResult"></div>
+        <div class="dialog-buttons">
+            <sp-button quiet id="cancelBtn">Cancel</sp-button>
+            <sp-button id="testBtn">Test</sp-button>
+            <sp-button variant="cta" id="saveBtn">Save</sp-button>
+        </div>
+    </dialog>
+
+    <script src="main.js"></script>
+</body>
+</html>

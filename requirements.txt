@@ -1,0 +1,5 @@
+# Core dependencies (most already included with ComfyUI)
+# Pillow - image processing (included with ComfyUI)
+# numpy - array operations (included with ComfyUI)
+# torch - tensor operations (included with ComfyUI)
+# aiohttp - async HTTP/WS (included with ComfyUI)

@@ -1,0 +1,13 @@
+[project]
+name = "ps-comfy-connect"
+description = "Simple bridge between Adobe Photoshop and ComfyUI"
+version = "1.0.0"
+license = "MIT"
+
+[project.urls]
+Repository = "https://github.com/your-repo/ps-comfy-connect"
+
+[tool.comfy]
+PublisherId = "ps-comfy-connect"
+DisplayName = "PS ComfyUI Bridge"
+Icon = ""

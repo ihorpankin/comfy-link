@@ -1,0 +1,54 @@
+{
+    "id": "ps.comfy.bridge",
+    "name": "ComfyUI Bridge",
+    "version": "1.0.0",
+    "main": "index.html",
+    "manifestVersion": 6,
+    "host": {
+        "app": "PS",
+        "minVersion": "23.0.0"
+    },
+    "entrypoints": [
+        {
+            "type": "panel",
+            "id": "ps.comfy.bridge.panel",
+            "label": {
+                "default": "ComfyUI Bridge"
+            },
+            "minimumSize": {
+                "width": 220,
+                "height": 120
+            },
+            "maximumSize": {
+                "width": 1200,
+                "height": 2000
+            },
+            "preferredDockedSize": {
+                "width": 280,
+                "height": 500
+            },
+            "preferredFloatingSize": {
+                "width": 300,
+                "height": 550
+            }
+        }
+    ],
+    "requiredPermissions": {
+        "localFileSystem": "fullAccess",
+        "network": {
+            "domains": "all"
+        },
+        "clipboard": "readAndWrite",
+        "allowCodeGenerationFromStrings": true
+    },
+    "icons": [
+        {
+            "width": 48,
+            "height": 48,
+            "path": "icons/icon.png",
+            "scale": [1, 2],
+            "theme": ["darkest", "dark", "medium", "lightest", "light", "all"],
+            "species": ["pluginList"]
+        }
+    ]
+}
