@@ -1,6 +1,6 @@
 {
     "id": "7887a1af",
-    "name": "ComfyUI Connector",
+    "name": "Comfy Link",
     "version": "1.1.0",
     "main": "index.html",
     "manifestVersion": 6,
@@ -11,9 +11,9 @@
     "entrypoints": [
         {
             "type": "panel",
-            "id": "comfyui.connector.panel",
+            "id": "comfy.link.panel",
             "label": {
-                "default": "ComfyUI Connector"
+                "default": "Comfy Link"
             },
             "minimumSize": {
                 "width": 240,
