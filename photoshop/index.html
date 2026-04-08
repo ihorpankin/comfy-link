@@ -20,6 +20,7 @@
             box-sizing: border-box;
             overflow: hidden;
             color: var(--uxp-host-text-color, #e0e0e0);
+            background: var(--uxp-host-background-color, #535353);
         }
 
         .content {
@@ -35,6 +36,28 @@
             flex-shrink: 0;
             padding: 12px;
             padding-top: 0;
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            border: 1px solid var(--uxp-host-border-color, #444);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .section[hidden] {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            opacity: 0.75;
         }
 
         .header {
@@ -79,6 +102,17 @@
             color: var(--uxp-host-text-color, #e0e0e0);
         }
 
+        .status-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .status-subtle {
+            font-size: 10px;
+            opacity: 0.6;
+        }
+
         .mode-inline {
             display: flex;
             align-items: center;
@@ -103,7 +137,9 @@
             border: 1px solid var(--uxp-host-border-color, #444);
             color: var(--uxp-host-text-color, #e0e0e0);
             font-size: 11px;
-            padding: 2px 8px;
+            font-weight: 600;
+            min-width: 52px;
+            padding: 4px 10px;
             border-radius: 4px;
             cursor: pointer;
             line-height: 16px;
@@ -126,6 +162,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
+            font-weight: 600;
             white-space: nowrap;
         }
 
@@ -158,18 +195,25 @@
             color: var(--uxp-host-text-color, #e0e0e0);
         }
 
+        .status-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
         .progressbar {
             width: 100%;
         }
 
         .progressbar progress {
             width: 100%;
-            height: 10px;
+            height: 8px;
             appearance: none;
         }
 
         .progressbar progress::-webkit-progress-bar {
-            background: var(--uxp-host-border-color, #444);
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 999px;
         }
 
@@ -301,6 +345,12 @@
             align-items: center;
         }
 
+        .history-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
         .history-grid {
             display: flex;
             flex-wrap: wrap;
@@ -333,40 +383,46 @@
     <!-- Scrollable content -->
     <div class="content">
         <!-- Header -->
-        <div class="header">
-            <div class="header-slot left">
-                <div class="connection-status">
-                    <div class="status-light" id="connStatus" data-variant="negative">
-                        <span class="dot" aria-hidden="true"></span>
-                        <span id="connLabel">Disconnected</span>
+        <div class="section">
+            <div class="header">
+                <div class="header-slot left">
+                    <div class="connection-status">
+                        <div class="status-light" id="connStatus" data-variant="negative">
+                            <span class="dot" aria-hidden="true"></span>
+                            <span id="connLabel">Disconnected</span>
+                        </div>
+                        <div class="status-copy">
+                            <div class="status-subtle">Bridge status</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="header-slot center">
-                <div class="mode-inline">
-                    <span class="detail" id="modeLabel">Selection as Mask</span>
-                    <button class="mode-toggle" id="modeToggle" aria-label="Toggle between mask mode and crop mode">Mask</button>
+                <div class="header-slot center">
+                    <div class="mode-inline">
+                        <span class="detail" id="modeLabel">Selection as Mask</span>
+                        <button class="mode-toggle" id="modeToggle" aria-label="Toggle between mask mode and crop mode">Mask</button>
+                    </div>
                 </div>
-            </div>
-            <div class="header-slot right">
-                <button class="settings-button" id="settingsBtn" title="Connection settings" aria-label="Connection settings">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-                        <path fill="currentColor" d="M16.45 7.4l-1.63-.27a5.67 5.67 0 0 0-.52-1.27l.96-1.32a.5.5 0 0 0-.05-.65l-1.1-1.1a.5.5 0 0 0-.65-.05l-1.32.96a5.67 5.67 0 0 0-1.27-.52L10.6 1.55a.5.5 0 0 0-.5-.42H8.55a.5.5 0 0 0-.49.42L7.8 3.18a5.67 5.67 0 0 0-1.27.52l-1.32-.96a.5.5 0 0 0-.65.05l-1.1 1.1a.5.5 0 0 0-.05.65l.96 1.32a5.67 5.67 0 0 0-.52 1.27l-1.63.27a.5.5 0 0 0-.42.5v1.55a.5.5 0 0 0 .42.49l1.63.27c.13.44.3.87.52 1.27l-.96 1.32a.5.5 0 0 0 .05.65l1.1 1.1a.5.5 0 0 0 .65.05l1.32-.96c.4.22.83.4 1.27.52l.27 1.63a.5.5 0 0 0 .49.42h1.55a.5.5 0 0 0 .5-.42l.27-1.63c.44-.13.87-.3 1.27-.52l1.32.96a.5.5 0 0 0 .65-.05l1.1-1.1a.5.5 0 0 0 .05-.65l-.96-1.32c.22-.4.4-.83.52-1.27l1.63-.27a.5.5 0 0 0 .42-.49V7.9a.5.5 0 0 0-.42-.5zM9.32 12a3 3 0 1 1 3-3 3 3 0 0 1-3 3z"/>
-                    </svg>
-                    <span>Server</span>
-                </button>
+                <div class="header-slot right">
+                    <button class="settings-button" id="settingsBtn" title="Connection settings" aria-label="Connection settings">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="currentColor" d="M16.45 7.4l-1.63-.27a5.67 5.67 0 0 0-.52-1.27l.96-1.32a.5.5 0 0 0-.05-.65l-1.1-1.1a.5.5 0 0 0-.65-.05l-1.32.96a5.67 5.67 0 0 0-1.27-.52L10.6 1.55a.5.5 0 0 0-.5-.42H8.55a.5.5 0 0 0-.49.42L7.8 3.18a5.67 5.67 0 0 0-1.27.52l-1.32-.96a.5.5 0 0 0-.65.05l-1.1 1.1a.5.5 0 0 0-.05.65l.96 1.32a5.67 5.67 0 0 0-.52 1.27l-1.63.27a.5.5 0 0 0-.42.5v1.55a.5.5 0 0 0 .42.49l1.63.27c.13.44.3.87.52 1.27l-.96 1.32a.5.5 0 0 0 .05.65l1.1 1.1a.5.5 0 0 0 .65.05l1.32-.96c.4.22.83.4 1.27.52l.27 1.63a.5.5 0 0 0 .49.42h1.55a.5.5 0 0 0 .5-.42l.27-1.63c.44-.13.87-.3 1.27-.52l1.32.96a.5.5 0 0 0 .65-.05l1.1-1.1a.5.5 0 0 0 .05-.65l-.96-1.32c.22-.4.4-.83.52-1.27l1.63-.27a.5.5 0 0 0 .42-.49V7.9a.5.5 0 0 0-.42-.5zM9.32 12a3 3 0 1 1 3-3 3 3 0 0 1-3 3z"/>
+                        </svg>
+                        <span>Server</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <sp-divider size="s"></sp-divider>
-
         <!-- Progress (hidden by default) -->
-        <div class="progress-section" id="progressSection" hidden aria-live="polite">
-            <div class="progress-status-row">
-                <div class="status-light" id="progressStatus" data-variant="info">
-                    <span class="dot" aria-hidden="true"></span>
+        <div class="section progress-section" id="progressSection" hidden aria-live="polite">
+            <div class="section-title">Generation</div>
+            <div class="status-line">
+                <div class="progress-status-row">
+                    <div class="status-light" id="progressStatus" data-variant="info">
+                        <span class="dot" aria-hidden="true"></span>
+                    </div>
+                    <div class="detail" id="statusLabel"></div>
                 </div>
-                <div class="detail" id="statusLabel"></div>
             </div>
             <div class="progressbar">
                 <progress id="progressBar" value="0" max="100"></progress>
@@ -374,8 +430,8 @@
         </div>
 
         <!-- Preview (hidden by default) -->
-        <div id="previewSection" hidden>
-            <div class="detail">Result Preview</div>
+        <div class="section" id="previewSection" hidden>
+            <div class="section-title">Result Preview</div>
             <div class="preview-container">
                 <img id="previewImage" alt="AI generation result preview" role="button" tabindex="0" aria-label="Click to apply result to canvas" />
                 <button class="preview-dismiss" id="dismissPreview" title="Dismiss preview" aria-label="Dismiss preview">&times;</button>
@@ -384,15 +440,19 @@
         </div>
 
         <!-- History -->
-        <sp-divider size="s"></sp-divider>
-        <div class="history-header">
-            <div class="detail" id="historyLabel">History</div>
-            <sp-switch id="historySwitch" aria-label="Toggle history on or off"></sp-switch>
+        <div class="section">
+            <div class="history-header">
+                <div class="history-meta">
+                    <div class="section-title" id="historyLabel">History</div>
+                    <div class="status-subtle">Keep recent results for quick re-apply</div>
+                </div>
+                <sp-switch id="historySwitch" aria-label="Toggle history on or off"></sp-switch>
+            </div>
+            <div id="historyControls" hidden style="display:none;">
+                <sp-action-button quiet id="clearHistoryBtn" title="Clear history" aria-label="Clear history">Clear all</sp-action-button>
+            </div>
+            <div class="history-grid" id="historyGrid" hidden></div>
         </div>
-        <div id="historyControls" hidden style="display:none;">
-            <sp-action-button quiet id="clearHistoryBtn" title="Clear history" aria-label="Clear history">Clear all</sp-action-button>
-        </div>
-        <div class="history-grid" id="historyGrid" hidden></div>
     </div>
 
     <!-- Fixed footer -->
