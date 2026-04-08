@@ -18,7 +18,7 @@ class SendToPS:
     RETURN_TYPES = ()
     OUTPUT_NODE = True
     FUNCTION = "execute"
-    CATEGORY = "PS Bridge"
+    CATEGORY = "Comfy Link"
 
     def execute(self, image):
         # Convert tensor to PIL Image

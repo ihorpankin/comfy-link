@@ -20,7 +20,7 @@ class ReceiveFromPS:
     RETURN_TYPES = ("IMAGE", "MASK", "INT", "INT")
     RETURN_NAMES = ("image", "mask", "width", "height")
     FUNCTION = "execute"
-    CATEGORY = "PS Bridge"
+    CATEGORY = "Comfy Link"
 
     def execute(self):
         default_size = (24, 24)

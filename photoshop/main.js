@@ -191,7 +191,7 @@ function updateConnection(connected) {
     connLabel.textContent = connected ? "Connected" : "Disconnected";
 }
 
-function handleWsMessage(msg) {
+async function handleWsMessage(msg) {
     switch (msg.type) {
         case "progress":
             showProgress(msg.value);
@@ -357,11 +357,10 @@ async function captureImageData() {
         maskBytes = createSolidMask(docWidth, docHeight, 255);
     } else {
         // Mask mode: send full canvas + selection as mask
+        selectionBounds = hasSelection ? bounds : null; // keep for restoring selection only
         if (hasSelection) {
-            selectionBounds = bounds;
             maskBytes = createSelectionBoundsMask(docWidth, docHeight, bounds);
         } else {
-            selectionBounds = null;
             maskBytes = createSolidMask(docWidth, docHeight, 255);
         }
     }
@@ -474,11 +473,36 @@ function handleResult(msg) {
         mode: currentMode
     };
 
+    // Restore selection immediately after generation (both modes)
+    if (selectionBounds) {
+        restoreSelection(selectionBounds);
+    }
+
     previewImage.src = `data:image/png;base64,${msg.image}`;
     previewSection.hidden = false;
     progressSection.hidden = true;
     resetGenerateUI();
     addToHistory(pendingResult);
+}
+
+async function restoreSelection(bounds) {
+    try {
+        await executeAsModal(async () => {
+            await batchPlay([{
+                _obj: "set",
+                _target: [{ _ref: "channel", _property: "selection" }],
+                to: {
+                    _obj: "rectangle",
+                    top: { _unit: "pixelsUnit", _value: bounds.top },
+                    left: { _unit: "pixelsUnit", _value: bounds.left },
+                    bottom: { _unit: "pixelsUnit", _value: bounds.bottom },
+                    right: { _unit: "pixelsUnit", _value: bounds.right }
+                }
+            }], { synchronousExecution: true });
+        }, { commandName: "Restore Selection" });
+    } catch (e) {
+        console.warn("[PS Bridge] Restore selection failed:", e);
+    }
 }
 
 // ─── Apply Result to Canvas ───
@@ -519,8 +543,8 @@ async function applyResultToCanvas(resultOverride) {
                 to: { _obj: "layer", name: "ComfyUI Result" }
             }], { synchronousExecution: true });
 
-            // Scale and position to match selection bounds
-            if (result.selectionBounds) {
+            // Scale and position to match selection bounds (crop mode only)
+            if (result.mode === "crop" && result.selectionBounds) {
                 const sb = result.selectionBounds;
                 const targetW = sb.right - sb.left;
                 const targetH = sb.bottom - sb.top;
@@ -575,7 +599,38 @@ async function applyResultToCanvas(resultOverride) {
                     }], { synchronousExecution: true });
                 }
 
-                // Restore selection
+            }
+
+            // Mask mode: align placed layer to canvas top-left to avoid shifts
+            if (result.mode !== "crop") {
+                const boundsResult = await batchPlay([{
+                    _obj: "get",
+                    _target: [
+                        { _property: "bounds" },
+                        { _ref: "layer", _enum: "ordinal", _value: "targetEnum" }
+                    ]
+                }], { synchronousExecution: true });
+
+                const lb = boundsResult[0].bounds;
+                const deltaX = Math.round(0 - lb.left._value);
+                const deltaY = Math.round(0 - lb.top._value);
+
+                if (deltaX !== 0 || deltaY !== 0) {
+                    await batchPlay([{
+                        _obj: "move",
+                        _target: [{ _ref: "layer", _enum: "ordinal", _value: "targetEnum" }],
+                        to: {
+                            _obj: "offset",
+                            horizontal: { _unit: "pixelsUnit", _value: deltaX },
+                            vertical: { _unit: "pixelsUnit", _value: deltaY }
+                        }
+                    }], { synchronousExecution: true });
+                }
+            }
+
+            // Restore selection (both modes)
+            if (result.selectionBounds) {
+                const sb = result.selectionBounds;
                 await batchPlay([{
                     _obj: "set",
                     _target: [{ _ref: "channel", _property: "selection" }],

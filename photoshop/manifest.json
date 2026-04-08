@@ -1,7 +1,7 @@
 {
     "id": "7887a1af",
     "name": "Comfy Link",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "main": "index.html",
     "manifestVersion": 6,
     "host": {
@@ -47,6 +47,22 @@
                     "scale": [2],
                     "theme": ["all"],
                     "species": ["pluginList"]
+                },
+                {
+                    "width": 23,
+                    "height": 23,
+                    "path": "icons/icon_23.png",
+                    "scale": [1],
+                    "theme": ["all"],
+                    "species": ["toolbar"]
+                },
+                {
+                    "width": 23,
+                    "height": 23,
+                    "path": "icons/icon_23@2x.png",
+                    "scale": [2],
+                    "theme": ["all"],
+                    "species": ["toolbar"]
                 }
             ]
         }
@@ -75,6 +91,22 @@
             "scale": [2],
             "theme": ["all"],
             "species": ["pluginList"]
+        },
+        {
+            "width": 23,
+            "height": 23,
+            "path": "icons/icon_23.png",
+            "scale": [1],
+            "theme": ["all"],
+            "species": ["toolbar"]
+        },
+        {
+            "width": 23,
+            "height": 23,
+            "path": "icons/icon_23@2x.png",
+            "scale": [2],
+            "theme": ["all"],
+            "species": ["toolbar"]
         },
         {
             "width": 48,
