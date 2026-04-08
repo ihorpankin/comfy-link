@@ -31,7 +31,7 @@ const progressSection = document.getElementById("progressSection");
 const progressBar = document.getElementById("progressBar");
 const statusLabel = document.getElementById("statusLabel");
 const modeLabel = document.getElementById("modeLabel");
-const modeSwitch = document.getElementById("modeSwitch");
+const modeToggle = document.getElementById("modeToggle");
 const previewSection = document.getElementById("previewSection");
 const previewImage = document.getElementById("previewImage");
 const dismissPreview = document.getElementById("dismissPreview");
@@ -107,10 +107,16 @@ testBtn.addEventListener("click", async () => {
     }
 });
 
-// ─── Mode Switch ───
-modeSwitch.addEventListener("change", () => {
-    currentMode = modeSwitch.checked ? "crop" : "mask";
+// ─── Mode Toggle ───
+function updateModeUI() {
     modeLabel.textContent = currentMode === "mask" ? "Selection as Mask" : "Selection Area Only";
+    modeToggle.textContent = currentMode === "mask" ? "Mask" : "Crop";
+    modeToggle.setAttribute("aria-pressed", currentMode === "crop" ? "true" : "false");
+}
+
+modeToggle.addEventListener("click", () => {
+    currentMode = currentMode === "mask" ? "crop" : "mask";
+    updateModeUI();
 });
 
 // ─── Preview Actions ───
@@ -187,7 +193,7 @@ function connectWebSocket() {
 }
 
 function updateConnection(connected) {
-    connStatus.setAttribute("variant", connected ? "positive" : "negative");
+    connStatus.dataset.variant = connected ? "positive" : "negative";
     connLabel.textContent = connected ? "Connected" : "Disconnected";
 }
 
@@ -211,7 +217,7 @@ async function handleWsMessage(msg) {
 function showProgress(value) {
     progressSection.hidden = false;
     progressBar.value = value;
-    progressStatus.setAttribute("variant", "info");
+    progressStatus.dataset.variant = "info";
     statusLabel.textContent = `Generating... ${value}%`;
 }
 
@@ -231,12 +237,12 @@ function handleStatus(status, error) {
         case "executing":
             progressSection.hidden = false;
             progressBar.value = 0;
-            progressStatus.setAttribute("variant", "info");
+            progressStatus.dataset.variant = "info";
             statusLabel.textContent = "Starting...";
             break;
         case "complete":
             clearGenerateTimeout();
-            progressStatus.setAttribute("variant", "positive");
+            progressStatus.dataset.variant = "positive";
             statusLabel.textContent = "Complete!";
             progressBar.value = 100;
             setTimeout(() => {
@@ -246,7 +252,7 @@ function handleStatus(status, error) {
             }, 1500);
             break;
         case "error":
-            progressStatus.setAttribute("variant", "negative");
+            progressStatus.dataset.variant = "negative";
             statusLabel.textContent = `Error: ${error || "Unknown"}`;
             progressBar.value = 0;
             resetGenerateUI();
@@ -263,7 +269,7 @@ generateBtn.addEventListener("click", async () => {
         } catch (e) {
             console.warn("[PS Bridge] Cancel request failed:", e);
         }
-        progressStatus.setAttribute("variant", "notice");
+        progressStatus.dataset.variant = "info";
         statusLabel.textContent = "Cancelled";
         progressSection.hidden = false;
         resetGenerateUI();
@@ -297,7 +303,7 @@ generateBtn.addEventListener("click", async () => {
         // Safety timeout — reset UI if no response after 5 minutes
         generateTimeout = setTimeout(() => {
             if (isGenerating) {
-                progressStatus.setAttribute("variant", "negative");
+                progressStatus.dataset.variant = "negative";
                 statusLabel.textContent = "Timed out — no response from ComfyUI";
                 progressSection.hidden = false;
                 resetGenerateUI();
@@ -305,7 +311,7 @@ generateBtn.addEventListener("click", async () => {
         }, 5 * 60 * 1000);
     } catch (e) {
         console.error("[PS Bridge] Generate error:", e);
-        progressStatus.setAttribute("variant", "negative");
+        progressStatus.dataset.variant = "negative";
         statusLabel.textContent = `Error: ${e?.message || e?.description || String(e) || "Unknown error"}`;
         progressSection.hidden = false;
         resetGenerateUI();
@@ -717,3 +723,4 @@ function clearPreview() {
 if (serverUrl) {
     connectWebSocket();
 }
+updateModeUI();
